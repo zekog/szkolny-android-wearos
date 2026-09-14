@@ -44,6 +44,7 @@ import org.greenrobot.eventbus.ThreadMode
 import pl.droidsonroids.gif.GifDrawable
 import pl.szczodrzynski.edziennik.core.manager.AvailabilityManager.Error.Type
 import pl.szczodrzynski.edziennik.core.manager.UserActionManager
+import pl.szczodrzynski.edziennik.core.service.WearSyncService
 import pl.szczodrzynski.edziennik.core.work.AppManagerDetectedEvent
 import pl.szczodrzynski.edziennik.core.work.SyncWorker
 import pl.szczodrzynski.edziennik.core.work.UpdateStateEvent
@@ -155,6 +156,8 @@ class MainActivity : AppCompatActivity(), CoroutineScope {
         super.onCreate(savedInstanceState)
 
         Timber.i("Activity created")
+
+        WearSyncService.start(this)
 
         app.uiManager.applyTheme(this)
         app.uiManager.applyLanguage(this)

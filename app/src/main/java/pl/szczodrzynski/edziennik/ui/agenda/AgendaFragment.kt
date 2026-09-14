@@ -136,10 +136,7 @@ class AgendaFragment : BaseFragment<ViewBinding, MainActivity>(
         val unreadEventDates = mutableSetOf<Int>()
 
         events.forEach { event ->
-            val eventIcon = CommunityMaterial.Icon.cmd_checkbox_blank_circle
-                .toDrawable(event.eventColor, sizeDp = 10)
-
-            dayList.add(EventDay(event.startTimeCalendar, eventIcon))
+            dayList.add(EventDay(event.startTimeCalendar, R.drawable.ic_event_dot))
 
             if (!event.seen) unreadEventDates.add(event.date.value)
         }

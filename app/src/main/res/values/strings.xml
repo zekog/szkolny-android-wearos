@@ -794,6 +794,7 @@
     <string name="notification_cant_check_update">Nie udało się sprawdzić aktualizacji</string>
     <string name="notification_channel_get_data_desc">Powiadomienie o pobieraniu danych dla e-dziennika</string>
     <string name="notification_channel_get_data_name">Pobieranie danych</string>
+    <string name="notification_wear_sync">Gotowy do synchronizacji z zegarkiem</string>
     <string name="notification_channel_notifications_desc">Powiadomienie o nowej zawartości w e-dzienniku</string>
     <string name="notification_channel_notifications_name">Powiadomienia</string>
     <string name="notification_channel_notifications_quiet_desc">Powiadomienie o nowej zawartości w e-dzienniku (bez dźwięku - podczas ciszy nocnej)</string>

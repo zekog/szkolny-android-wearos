@@ -200,6 +200,7 @@
              |_____/ \___|_|    \_/ |_|\___\___||___/
         -->
         <service android:name=".data.api.ApiService" android:foregroundServiceType="dataSync"/>
+        <service android:name=".core.service.WearSyncService" android:foregroundServiceType="dataSync"/>
         <service android:name=".core.firebase.MyFirebaseService"
             android:exported="false" android:foregroundServiceType="dataSync">
             <intent-filter android:priority="10000000">

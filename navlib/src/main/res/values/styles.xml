@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="NavView" />
+    <style name="NavView.Widget" />
+
+    <style name="NavView.TextView" />
+
+    <style name="NavView.TextView.Normal" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="NavView.TextView.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="NavView.TextView.Subtitle" parent="TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="NavView.TextView.Large" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="NavView.TextView.Medium" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+    <style name="NavView.TextView.Small" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+    <style name="NavView.TextView.Helper" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+</resources>

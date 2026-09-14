@@ -42,6 +42,7 @@ import pl.szczodrzynski.edziennik.core.manager.TimetableManager
 import pl.szczodrzynski.edziennik.core.manager.UiManager
 import pl.szczodrzynski.edziennik.core.manager.UpdateManager
 import pl.szczodrzynski.edziennik.core.manager.UserActionManager
+import pl.szczodrzynski.edziennik.core.manager.WearSyncManager
 import pl.szczodrzynski.edziennik.core.network.DumbCookieJar
 import pl.szczodrzynski.edziennik.core.work.SyncWorker
 import pl.szczodrzynski.edziennik.core.work.UpdateWorker
@@ -99,6 +100,7 @@ class App : MultiDexApplication(), Configuration.Provider, CoroutineScope {
     val uiManager by lazy { UiManager(this) }
     val updateManager by lazy { UpdateManager(this) }
     val userActionManager by lazy { UserActionManager(this) }
+    val wearSyncManager by lazy { WearSyncManager(this) }
 
     val db
         get() = App.db
@@ -263,11 +265,20 @@ class App : MultiDexApplication(), Configuration.Provider, CoroutineScope {
                 UpdateWorker.scheduleNext(this@App, false)
             else
                 UpdateWorker.cancelNext(this@App)
+
+            wearSyncManager.syncNow()
         }
 
         db.metadataDao().countUnseen().observeForever { count: Int ->
             if (unreadBadgesAvailable)
                 unreadBadgesAvailable = ShortcutBadger.applyCount(this@App, count)
+        }
+
+        // push data to a paired Wear OS device on app start and after each sync
+        try {
+            EventBus.getDefault().register(wearSyncManager)
+        } catch (e: Exception) {
+            Timber.e(e, "Cannot register WearSyncManager")
         }
     }
 
