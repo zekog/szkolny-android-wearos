@@ -16,6 +16,65 @@
 
 </div>
 
+## To jest prywatny fork
+
+To repozytorium jest **prywatnym forkiem** projektu [szkolny-eu/szkolny-android](https://github.com/szkolny-eu/szkolny-android). Zawiera ono dodatkową aplikację **Szkolny na Wear OS** (moduły `:wear` oraz `:wear-data`) i nie jest w żaden sposób powiązane z autorami oryginału. Linki do strony, Google Play i wydań w dalszej części odnoszą się do **oryginalnego** projektu.
+
+## Aplikacja na Wear OS
+
+Rozszerzenie oryginalnej aplikacji o zegarki z **Wear OS 5+**. Telefon nadal odpowiada za logowanie i synchronizację z e-dziennikiem, a zegarek tylko wyświetla dane — dzięki temu na małym ekranie nie trzeba wpisywać hasła ani przechodzić przez logowanie Librus&reg;.
+
+### Funkcje na zegarku
+
+- **Plan lekcji** (priorytet): wybór dnia, zastępstwa, zmiany i lekcje przeniesione, lekcje odwołane, sala i nauczyciel
+- **Oceny** — grupowane po przedmiocie wraz ze średnią
+- **Zadania i wydarzenia** — posortowane po dacie
+- **Frekwencja** — podsumowanie (obecne/nieobecne/usprawiedliwione/spóźnienia) oraz lista
+- **Uwagi** — pochwały, uwagi, punkty
+- **Wiadomości** — lista, treść i załączniki
+- **Ogłoszenia** — lista i szczegóły
+- **Szczęśliwe liczby**
+- **8 motywów** kolorystycznych, w tym Catppuccin (Latte, Frappé, Macchiato, Mocha) oraz motyw ciemny, zielony i fioletowy
+- **Obsługa koronki** (przewijanie list)
+
+### Jak to działa
+
+1. Aplikacja na telefonie loguje się do e-dziennika i po każdej synchronizacji publikuje dane **aktywnego profilu** (plan, oceny, zadania, frekwencję, uwagi, wiadomości, ogłoszenia, szczęśliwe liczby).
+2. Moduł `:wear` pobiera je z telefonu i zapisuje w lokalnym cache, więc działa też offline.
+3. Transport danych:
+   - najpierw **LAN** — `UDP discovery` + `TCP` (jeden request `/szkolny/bundle` dla wszystkich sekcji),
+   - a jeśli się nie uda — **Wearable Data Layer**.
+4. Na telefonie działa usługa pierwszego planu `WearSyncService`, która utrzymuje serwer LAN przy życiu (cicha, stała notyfikacja).
+
+### Wymagania
+
+- Zegarek z **Wear OS 5+** (minSdk 30) sparowany z telefonem.
+- Telefon i zegarek w **tej samej sieci Wi-Fi**.
+- Oba APK podpisane **tym samym kluczem** i z tym samym `applicationId` (wersja debug: `pl.szczodrzynski.edziennik.debug`).
+- Aplikacja na telefonie uruchomiona przynajmniej raz (startuje wtedy usługa). Zalecane wyłączenie optymalizacji baterii dla aplikacji, aby usługa nie była zabijana.
+
+### Budowanie i instalacja
+
+```bash
+./gradlew :app:assembleUnofficialDebug
+./gradlew :wear:assembleDebug
+
+adb -s <telefon> install -r app/build/outputs/apk/unofficial/debug/app-unofficial-debug.apk
+adb -s <zegarek> install -r wear/build/outputs/apk/debug/wear-debug.apk
+```
+
+Moduły:
+
+- `:app` — aplikacja na telefon (zawiera `WearSyncManager` i `WearLanServer`)
+- `:wear` — aplikacja na zegarek (Jetpack Compose for Wear OS)
+- `:wear-data` — współdzielone modele DTO i serializacja JSON między telefonem a zegarkiem
+
+### Rozwiązywanie problemów
+
+- **Brak danych na zegarku** — otwórz aplikację na telefonie (uruchomi usługę i serwer), upewnij się, że oba urządzenia są w tej samej sieci Wi-Fi. Przycisk „Odśwież" na zegarku wymusza ponowne pobranie.
+- **Niektóre zegarki OPPO/OnePlus** (parowane przez OHealth, bez aplikacji Google Wear) nie replikują danych przez Wearable Data Layer — dlatego podstawowym kanałem jest LAN.
+- **Koronka** — jeśli przewijanie działa w odwrotnym kierunku lub jest zbyt wolne/szybkie, zmień znak w `WearRotary.onRotate` lub wartość `WearRotary.STEP_PIXELS`.
+
 ## Ważna informacja
 
 Jak zapewne już wiecie, we wrześniu 2020 r. **firma Librus zabroniła nam** publikowania w sklepie Google Play naszej aplikacji z obsługą dziennika Librus&reg; Synergia. Prowadziliśmy rozmowy, aby **umożliwić Wam wygodny, bezpłatny dostęp do Waszych ocen, wiadomości, zadań domowych**, jednak oczekiwania firmy Librus zdecydowanie przekroczyły wszelkie nasze możliwości finansowe. Mając na uwadze powyższe względy, zdecydowaliśmy się opublikować kod źródłowy aplikacji Szkolny.eu. Liczymy, że dzięki temu aplikacja będzie mogła dalej funkcjonować, być rozwijana, pomagając Wam w czasie zdalnego nauczania i przez kolejne lata nauki.
@@ -60,6 +119,14 @@ Aby uruchomić aplikację „ze źródeł” należy użyć Android Studio w wer
 Aby zbudować wersję produkcyjną, tzn. `release` należy użyć wariantu `mainRelease` oraz podpisać wyjściowy plik .APK sygnaturą w wersji V1 i V2.
 
 Warianty `play` oraz `official` są zastrzeżone dla wydań oficjalnych.
+
+Aplikację na zegarek buduje się niezależnie:
+
+```bash
+./gradlew :wear:assembleDebug      # lub :wear:assembleRelease
+```
+
+Wersja `release` zegarka jest podpisywana kluczem debug tylko jako domyślny fallback — aby synchronizacja przez Wearable Data Layer działała, telefon i zegarek muszą być podpisane **tym samym** kluczem.
 
 ## Współpraca
 
